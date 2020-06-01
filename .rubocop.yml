@@ -1,0 +1,53 @@
+require: rubocop-rails
+inherit_from: .rubocop_todo.yml
+
+# Trailing comma is better for git diff and more accurate for git blame
+#
+# Migration files  are skipped due to migration checks on CI
+# that does not allowed them to be changed once deployed.
+# Hence, the benefits of this cop are not relevant to them
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: consistent_comma
+  Exclude:
+    - db/migrate/*.rb
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+  Exclude:
+    - db/migrate/*.rb
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+  Exclude:
+    - db/migrate/*.rb
+
+# to match our preference for consistent indentation
+Layout/FirstArrayElementLineBreak:
+  Enabled: true
+
+# to match our preference for consistent indentation
+Layout/FirstHashElementLineBreak:
+  Enabled: true
+
+# to match our preference for consistent indentation
+Layout/FirstMethodArgumentLineBreak:
+  Enabled: true
+
+# to match our preference for consistent indentation
+Layout/FirstMethodParameterLineBreak:
+  Enabled: true
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
