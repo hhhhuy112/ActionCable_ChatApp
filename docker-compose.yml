@@ -11,7 +11,7 @@ services:
     image: mysql:5.7
     privileged: true
     ports: 
-      - "8806:3306"
+      - "9905:3306"
     env_file: 
       - .env
     expose: 
