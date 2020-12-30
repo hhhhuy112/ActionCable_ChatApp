@@ -17,7 +17,7 @@ pipeline {
             steps {
                 // 
                 echo "D"
-                echo "D1"
+                echo "D12"
             }
         }
     }
