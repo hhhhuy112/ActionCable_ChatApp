@@ -30,6 +30,9 @@ COPY yarn.lock .
 RUN yarn install
 RUN /bin/sh -c rails webpacker:install 
 RUN rails generate devise:install
+# RUN chmod -R 777 ./
+
+
 # Start the main process.
 CMD ["rails", "server", "-b", "0.0.0.0"]
 

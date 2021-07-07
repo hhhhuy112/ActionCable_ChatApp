@@ -1,7 +1,6 @@
 version: '3'
 services:
   redis:
-    privileged: true
     image: 'redis:4.0-alpine'
     command: redis-server 
     volumes:
@@ -9,9 +8,8 @@ services:
   
   db:
     image: mysql:5.7
-    privileged: true
     ports: 
-      - "9905:3306"
+      - "9906:3306"
     env_file: 
       - .env
     expose: 
@@ -20,15 +18,14 @@ services:
       - my-db:/var/lib/mysql
   web:
     build: .
-    privileged: true
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3001 -b '0.0.0.0'"
     volumes:
       - .:/backend
       - cache:/cache
     environment:
       - SPROCKETS_CACHE=/cache
     ports:
-      - "3000:3000"
+      - "3001:3001"
     depends_on:
       - db
   
@@ -38,14 +35,14 @@ services:
       - 'redis'
     build: .
     ports: 
-      - '6379:6379'
+      - '6380:6380'
     command: bundle exec sidekiq -e development
     volumes:
       - '.:/backend'
     env_file:
       - '.env'
     expose: 
-      - '6379'
+      - '6380'
     links: 
       - "redis"
 

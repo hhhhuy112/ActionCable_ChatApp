@@ -1,34 +1,45 @@
-node {
-    def app
+#!groovy
 
-    stage('Clone repository') {
-        /* Let's make sure we have the repository cloned to our workspace */
+pipeline {
+    agent { node { label 'master' } }
 
-        checkout scm
+
+    stages {
+        
+        stage("Build and start test image") {
+            steps {
+                bat """
+                    docker-compose -f docker-compose-pipeline.yml build
+                    docker-compose -f docker-compose-pipeline.yml up -d
+                """
+            }
+        }
+
+        stage("Integration Test") {
+            steps {
+                bat """
+                    docker-compose --project-name=${JOB_NAME} run web bundle exec rspec spec
+                """
+            }
+        }
     }
-
-    stage('Build docker') {
-        /* This builds the actual image; synonymous to
-         * docker build on the command line */
-        sh docker-compose up --build
+    post {
+        always {
+            echo 'This will always run'
+        }
+        success {
+            echo 'This will run only if successful'
+        }
+        failure {
+            echo 'This will run only if failed'
+        }
+        unstable {
+            echo 'This will run only if the run was marked as unstable'
+        }
+        changed {
+            echo 'This will run only if the state of the Pipeline has changed'
+            echo 'For example, if the Pipeline was previously failing but is now successful'
+        }
     }
-
-    stage('Test image') {
-        /* Ideally, we would run a test framework against our image.
-         * For this example, we're using a Volkswagen-type approach ;-) */
-
-        sh docker-compose up --build
-        sh docker exec -it chat_app_1_web_1 bin/rspec
-    }
-
-    //stage('Push image') {
-        /* Finally, we'll push the image with two tags:
-         * First, the incremental build number from Jenkins
-         * Second, the 'latest' tag.
-         * Pushing multiple tags is cheap, as all the layers are reused. */
-        // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-        //     app.push("${env.BUILD_NUMBER}")
-        //     app.push("latest")
-        // }
-    //}
 }
+
